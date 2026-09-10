@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>フード編集</title>
+</head>
+
+<body>
+
+    <h1>フード編集</h1>
+
+    <!-- 編集フォーム -->
+    <form th:action="@{/pets/{petId}/foods/edit/{id}
+          (petId=${pet.id}, id=${food.id})}"
+          th:object="${food}"
+          method="post">
+
+        <!-- フード名 -->
+        <div>
+            <label>フード名</label>
+            <input type="text" th:field="*{foodName}">
+        </div>
+
+        <br>
+
+        <!-- カロリー -->
+        <div>
+            <label>カロリー（kcal / 100g）</label>
+            <input type="number" th:field="*{calorie}">
+        </div>
+
+        <br>
+
+        <!-- 食いつき -->
+        <div>
+            <label>食いつき</label>
+
+            <select th:field="*{palatability}">
+                <option value="1">★☆☆☆☆</option>
+                <option value="2">★★☆☆☆</option>
+                <option value="3">★★★☆☆</option>
+                <option value="4">★★★★☆</option>
+                <option value="5">★★★★★</option>
+            </select>
+        </div>
+
+        <br>
+
+        <!-- メモ -->
+        <div>
+            <label>メモ</label>
+            <textarea th:field="*{memo}"></textarea>
+        </div>
+
+        <br>
+
+        <button type="submit">更新</button>
+
+    </form>
+
+    <br>
+
+    <!-- フード管理画面へ戻る -->
+    <a th:href="@{/pets/{petId}/foods(petId=${pet.id})}">
+        フード管理へ戻る
+    </a>
+
+</body>
+
+</html>

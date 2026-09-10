@@ -1,0 +1,90 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.app.mapper.FoodMapper">
+
+    <!-- 指定したペットのフードをすべて取得する -->
+    <select id="selectByPetId"
+            parameterType="java.lang.Integer"
+            resultType="com.example.app.domain.Food">
+
+        SELECT
+            id,
+            pet_id AS petId,
+            food_name AS foodName,
+            calorie,
+            palatability,
+            memo
+        FROM foods
+        WHERE pet_id = #{petId}
+        ORDER BY id ASC
+
+    </select>
+
+
+    <!-- IDを指定してフードを1件取得する -->
+    <select id="selectById"
+            parameterType="java.lang.Integer"
+            resultType="com.example.app.domain.Food">
+
+        SELECT
+            id,
+            pet_id AS petId,
+            food_name AS foodName,
+            calorie,
+            palatability,
+            memo
+        FROM foods
+        WHERE id = #{id}
+
+    </select>
+
+
+    <!-- フードを登録する -->
+    <insert id="insert"
+            parameterType="com.example.app.domain.Food">
+
+        INSERT INTO foods (
+            pet_id,
+            food_name,
+            calorie,
+            palatability,
+            memo
+        )
+        VALUES (
+            #{petId},
+            #{foodName},
+            #{calorie},
+            #{palatability},
+            #{memo}
+        )
+
+    </insert>
+
+
+    <!-- フードを更新する -->
+    <update id="update"
+            parameterType="com.example.app.domain.Food">
+
+        UPDATE foods
+        SET
+            food_name = #{foodName},
+            calorie = #{calorie},
+            palatability = #{palatability},
+            memo = #{memo}
+        WHERE id = #{id}
+
+    </update>
+
+
+    <!-- フードを削除する -->
+    <delete id="delete"
+            parameterType="java.lang.Integer">
+
+        DELETE FROM foods
+        WHERE id = #{id}
+
+    </delete>
+
+</mapper>

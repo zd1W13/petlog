@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.app.mapper.HealthRecordMapper">
+
+	<!-- 指定したペットの健康記録をすべて取得する -->
+	<select id="selectByPetId" parameterType="java.lang.Integer"
+		resultType="com.example.app.domain.HealthRecord">
+
+		SELECT
+		id,
+		pet_id AS petId,
+		record_date AS recordDate,
+		weight,
+		poop_condition AS poopCondition,
+		urination_count AS urinationCount,
+		vomiting,
+		morning_food_amount AS morningFoodAmount,
+		morning_no_meal AS
+		morningNoMeal,
+		evening_food_amount AS eveningFoodAmount,
+		evening_no_meal AS eveningNoMeal,
+		memo
+		FROM health_records
+		WHERE pet_id =
+		#{petId}
+		ORDER BY record_date DESC
+
+	</select>
+
+	<!-- 指定したペットの直近1か月の健康記録を取得する -->
+	<select id="selectLastMonthByPetId"
+		parameterType="java.lang.Integer"
+		resultType="com.example.app.domain.HealthRecord">
+
+		SELECT
+		id,
+		pet_id AS petId,
+		record_date AS recordDate,
+		weight,
+		morning_food_amount AS morningFoodAmount,
+		evening_food_amount AS eveningFoodAmount
+
+		FROM health_records
+		WHERE pet_id = #{petId}
+		AND record_date >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)
+		ORDER BY record_date ASC
+		
+	</select>
+
+
+	<!-- 健康記録IDを使って1件取得する -->
+	<select id="selectById" parameterType="java.lang.Integer"
+		resultType="com.example.app.domain.HealthRecord">
+
+		SELECT
+		id,
+		pet_id AS petId,
+		record_date AS recordDate,
+		weight,
+		poop_condition AS poopCondition,
+		urination_count AS urinationCount,
+		vomiting,
+		morning_food_amount AS morningFoodAmount,
+		morning_no_meal AS
+		morningNoMeal,
+		evening_food_amount AS eveningFoodAmount,
+		evening_no_meal AS eveningNoMeal,
+		memo
+		FROM health_records
+		WHERE id =
+		#{id}
+
+	</select>
+
+
+	<!-- 指定したペット・日付の健康記録を1件取得する -->
+	<select id="selectByPetIdAndDate"
+		resultType="com.example.app.domain.HealthRecord">
+
+		SELECT
+		id,
+		pet_id AS petId,
+		record_date AS recordDate,
+		weight,
+		poop_condition AS poopCondition,
+		urination_count AS urinationCount,
+		vomiting,
+		morning_food_amount AS morningFoodAmount,
+		morning_no_meal AS
+		morningNoMeal,
+		evening_food_amount AS eveningFoodAmount,
+		evening_no_meal AS eveningNoMeal,
+		memo
+		FROM health_records
+		WHERE pet_id =
+		#{petId}
+		AND record_date = #{recordDate}
+
+	</select>
+
+
+	<!-- 健康記録を新しく登録する -->
+	<insert id="insert"
+		parameterType="com.example.app.domain.HealthRecord"
+		useGeneratedKeys="true" keyProperty="id">
+
+		INSERT INTO health_records (
+		pet_id,
+		record_date,
+		weight,
+		poop_condition,
+		urination_count,
+		vomiting,
+		morning_food_amount,
+		morning_no_meal,
+		evening_food_amount,
+		evening_no_meal,
+		memo
+		)
+		VALUES (
+		#{petId},
+		#{recordDate},
+		#{weight},
+		#{poopCondition},
+		#{urinationCount},
+		#{vomiting},
+		#{morningFoodAmount},
+		#{morningNoMeal},
+		#{eveningFoodAmount},
+		#{eveningNoMeal},
+		#{memo}
+		)
+
+	</insert>
+
+
+	<!-- 健康記録を更新する -->
+	<update id="update"
+		parameterType="com.example.app.domain.HealthRecord">
+
+		UPDATE health_records
+		SET
+		pet_id = #{petId},
+		record_date =
+		#{recordDate},
+		weight = #{weight},
+		poop_condition = #{poopCondition},
+		urination_count = #{urinationCount},
+		vomiting = #{vomiting},
+		morning_food_amount = #{morningFoodAmount},
+		morning_no_meal =
+		#{morningNoMeal},
+		evening_food_amount = #{eveningFoodAmount},
+		evening_no_meal = #{eveningNoMeal},
+		memo = #{memo}
+		WHERE id = #{id}
+
+	</update>
+
+
+	<!-- 指定した健康記録を削除する -->
+	<delete id="delete" parameterType="java.lang.Integer">
+
+		DELETE FROM health_records
+		WHERE id = #{id}
+
+	</delete>
+
+</mapper>

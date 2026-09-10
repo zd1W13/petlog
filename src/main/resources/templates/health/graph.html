@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>健康グラフ</title>
+<style>
+    .chart-container {
+        width: 700px;
+        height: 400px;
+    }
+
+    .axis-labels {
+        width: 700px;
+        display: flex;
+        justify-content: space-between;
+    }
+</style>
+</head>
+<body>
+
+    <h1>健康グラフ</h1>
+
+    <div class="axis-labels">
+        <span>体重(kg)</span>
+        <span>給餌量(g)</span>
+    </div>
+
+    <div class="chart-container">
+        <canvas id="healthGraphChart"></canvas>
+    </div>
+
+    <a th:href="@{/pets/{petId}/records(petId=${petId})}">
+        健康記録一覧へ戻る
+    </a>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script th:inline="javascript">
+        const records = /*[[${records}]]*/ [];
+
+        const labels = records.map(record => record.recordDate);
+        const weights = records.map(record => record.weight);
+        const morningFood = records.map(record => record.morningFoodAmount);
+        const eveningFood = records.map(record => record.eveningFoodAmount);
+
+        const ctx = document.getElementById('healthGraphChart');
+        new Chart(ctx, {
+            type: 'line',
+
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: '体重(kg)',
+                        data: weights, 
+                        yAxisID: 'yWeight'
+                    },
+                    {
+                        label: '朝の給餌量(g)',
+                        data: morningFood, 
+                        yAxisID: 'yFood'
+                    },
+                    {
+                        label: '晩の給餌量(g)',
+                        data: eveningFood, 
+                        yAxisID: 'yFood'
+                    }
+            ]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                scales: {
+                    yWeight: {
+                        type: 'linear',
+                        position: 'left',
+                        
+                    },
+                    yFood: {
+                        type: 'linear',
+                        position: 'right',
+                        
+                    }
+                }
+            }
+
+        });
+
+    </script>
+</body>
+</html>

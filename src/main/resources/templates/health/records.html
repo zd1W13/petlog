@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>健康記録</title>
+</head>
+
+<body>
+
+    <h1>健康記録</h1>
+
+    <!-- 対象ペット名 -->
+    <h2 th:text="${pet.name} + ' の健康記録'">
+        ペットの健康記録
+    </h2>
+
+    <!-- 上部ナビゲーション -->
+    <div>
+
+        <!-- 健康記録登録画面へ -->
+        <a th:href="@{/pets/{petId}/records/add(petId=${pet.id})}">
+            ＋健康記録を登録
+        </a>
+
+        <!-- ペット詳細画面へ戻る -->
+        <a th:href="@{/pets/{id}(id=${pet.id})}">
+            ペット詳細へ戻る
+        </a>
+
+    </div>
+
+    <hr>
+
+
+    <!-- ========================= -->
+    <!-- 選択日の健康記録 -->
+    <!-- ========================= -->
+
+    <h2>健康記録詳細</h2>
+
+    <p>
+        <strong>日付：</strong>
+        <span th:text="${selectedDate}">2026-09-09</span>
+    </p>
+
+
+    <!-- 健康記録が存在する場合 -->
+    <div th:if="${selectedRecord != null}">
+
+        <!-- 体重 -->
+        <p>
+            <strong>体重：</strong>
+            <span th:text="${selectedRecord.weight}">0</span> kg
+        </p>
+
+
+        <!-- うんちの状態 -->
+        <p>
+            <strong>うんちの状態：</strong>
+            <span th:text="${selectedRecord.poopCondition}">
+                普通
+            </span>
+        </p>
+
+
+        <!-- おしっこの回数 -->
+        <p>
+            <strong>おしっこの回数：</strong>
+            <span th:text="${selectedRecord.urinationCount}">
+                0
+            </span>
+            回
+        </p>
+
+
+        <!-- 嘔吐 -->
+        <p>
+            <strong>嘔吐：</strong>
+
+            <span th:if="${selectedRecord.vomiting == true}">
+                あり
+            </span>
+
+            <span th:if="${selectedRecord.vomiting != true}">
+                なし
+            </span>
+        </p>
+
+
+        <!-- 朝の食事量 -->
+        <p>
+            <strong>食事量（朝）：</strong>
+
+            <!-- 食べていない場合 -->
+            <span th:if="${selectedRecord.morningNoMeal == true}">
+                食べていない
+            </span>
+
+            <!-- 食べた場合 -->
+            <span th:if="${selectedRecord.morningNoMeal != true}">
+                <span th:text="${selectedRecord.morningFoodAmount}">
+                    0
+                </span>
+                g
+            </span>
+        </p>
+
+
+        <!-- 晩の食事量 -->
+        <p>
+            <strong>食事量（晩）：</strong>
+
+            <!-- 食べていない場合 -->
+            <span th:if="${selectedRecord.eveningNoMeal == true}">
+                食べていない
+            </span>
+
+            <!-- 食べた場合 -->
+            <span th:if="${selectedRecord.eveningNoMeal != true}">
+                <span th:text="${selectedRecord.eveningFoodAmount}">
+                    0
+                </span>
+                g
+            </span>
+        </p>
+
+
+        <!-- メモ -->
+        <p>
+            <strong>メモ：</strong>
+            <span th:text="${selectedRecord.memo}">
+                特になし
+            </span>
+        </p>
+
+
+        <!-- 編集画面へ -->
+        <a th:href="@{/pets/{petId}/records/edit/{id}
+            (petId=${pet.id}, id=${selectedRecord.id})}">
+            編集
+        </a>
+
+        <!-- 健康記録を削除する -->
+        <form th:action="@{/pets/{petId}/records/delete/{id}
+        (petId=${pet.id}, id=${selectedRecord.id})}" method="post" style="display:inline;"
+            onsubmit="return confirm('この健康記録を削除しますか？');">
+
+            <button type="submit">
+                削除
+            </button>
+
+        </form>
+
+    </div>
+
+
+
+    <!-- 健康記録がない場合 -->
+    <div th:if="${selectedRecord == null}">
+
+        <p>
+            この日の健康記録はまだ登録されていません。
+        </p>
+
+    </div>
+
+    <hr>
+
+
+    <!-- ========================= -->
+<!-- 過去の健康記録カレンダー -->
+<!-- ========================= -->
+
+<h2>過去の健康記録</h2>
+
+<!-- 前月・次月へ移動するボタン -->
+<div>
+    <button type="button" id="prevMonth">
+        ＜ 前月
+    </button>
+
+    <strong id="calendarTitle"></strong>
+
+    <button type="button" id="nextMonth">
+        次月 ＞
+    </button>
+</div>
+
+<br>
+
+<!-- カレンダー本体 -->
+<table border="1" id="calendar">
+
+    <thead>
+        <tr>
+            <th>日</th>
+            <th>月</th>
+            <th>火</th>
+            <th>水</th>
+            <th>木</th>
+            <th>金</th>
+            <th>土</th>
+        </tr>
+    </thead>
+
+    <!-- JavaScriptで日付を入れる -->
+    <tbody id="calendarBody">
+    </tbody>
+
+</table>
+
+
+<!-- DBに登録されている健康記録の日付をJavaScriptへ渡す -->
+<script th:inline="javascript">
+
+    /*
+     * HealthRecordの一覧から、
+     * 「記録が存在する日付」だけを取り出す。
+     */
+    const recordDates = [
+        /*[# th:each="record : ${recordList}"]*/
+        /*[[${record.recordDate}]]*/,
+        /*[/]*/
+    ];
+
+    // URL作成に使うペットID
+    const petId = /*[[${pet.id}]]*/ 0;
+
+    // 現在表示している日付
+    const selectedDate = new Date(
+        /*[[${selectedDate}]]*/ '2026-09-09'
+    );
+
+
+    // =========================
+    // カレンダーに表示する年月
+    // =========================
+
+    let currentYear = selectedDate.getFullYear();
+    let currentMonth = selectedDate.getMonth();
+
+
+    // =========================
+    // カレンダーを作る処理
+    // =========================
+
+    function createCalendar(year, month) {
+
+        // カレンダー本体を取得
+        const calendarBody =
+            document.getElementById("calendarBody");
+
+        // 前回表示した内容を削除
+        calendarBody.innerHTML = "";
+
+        // タイトルを表示
+        document.getElementById("calendarTitle").textContent =
+            year + "年 " + (month + 1) + "月";
+
+
+        // その月の1日
+        const firstDay =
+            new Date(year, month, 1);
+
+        // その月の最終日
+        const lastDay =
+            new Date(year, month + 1, 0);
+
+        // 1日の曜日
+        const startWeekDay =
+            firstDay.getDay();
+
+        // 月の日数
+        const daysInMonth =
+            lastDay.getDate();
+
+
+        let date = 1;
+
+
+        // 最大6週間分作成する
+        for (let week = 0; week < 6; week++) {
+
+            const row =
+                document.createElement("tr");
+
+
+            // 日曜日から土曜日まで
+            for (let day = 0; day < 7; day++) {
+
+                const cell =
+                    document.createElement("td");
+
+
+                // 1週目の空白部分
+                if (week === 0 &&
+                    day < startWeekDay) {
+
+                    cell.textContent = "";
+
+                } else if (date > daysInMonth) {
+
+                    cell.textContent = "";
+
+                } else {
+
+                    // 日付を表示
+                    cell.textContent = date;
+
+
+                    // YYYY-MM-DD形式へ変換
+                    const dateString =
+                        year + "-" +
+                        String(month + 1).padStart(2, "0") + "-" +
+                        String(date).padStart(2, "0");
+
+
+                    // 健康記録が登録されている日か確認
+                    if (recordDates.includes(dateString)) {
+
+                        // 記録があることが分かるように印を付ける
+                        cell.textContent = date + " ●";
+
+                        // クリックできるようにする
+                        cell.style.cursor = "pointer";
+
+                        // 日付をクリックしたら
+                        // その日の健康記録を表示する
+                        cell.addEventListener("click", function () {
+
+                            window.location.href =
+                                "/pets/" +
+                                petId +
+                                "/records?date=" +
+                                dateString;
+                        });
+                    }
+
+                    date++;
+                }
+
+                row.appendChild(cell);
+            }
+
+            calendarBody.appendChild(row);
+
+
+            // その月の日付を全部表示したら終了
+            if (date > daysInMonth) {
+                break;
+            }
+        }
+    }
+
+
+    // =========================
+    // 前月ボタン
+    // =========================
+
+    document.getElementById("prevMonth")
+        .addEventListener("click", function () {
+
+            currentMonth--;
+
+            // 1月より前になった場合
+            if (currentMonth < 0) {
+
+                currentMonth = 11;
+                currentYear--;
+            }
+
+            createCalendar(
+                currentYear,
+                currentMonth
+            );
+        });
+
+
+    // =========================
+    // 次月ボタン
+    // =========================
+
+    document.getElementById("nextMonth")
+        .addEventListener("click", function () {
+
+            currentMonth++;
+
+            // 12月より後になった場合
+            if (currentMonth > 11) {
+
+                currentMonth = 0;
+                currentYear++;
+            }
+
+            createCalendar(
+                currentYear,
+                currentMonth
+            );
+        });
+
+
+    // 最初のカレンダーを表示
+    createCalendar(
+        currentYear,
+        currentMonth
+    );
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>フード管理</title>
+</head>
+
+<body>
+
+    <h1>フード管理</h1>
+
+    <!-- ペット名を表示 -->
+    <h2 th:text="${pet.name} + ' のフード'">くるみのフード</h2>
+
+    <!-- フード給餌量計算画面へ -->
+     <a th:href="@{/pets/{petId}/foods/calculate(petId=${pet.id})}">
+        フード給餌量計算
+     </a>
+
+     <br><br>
+
+     <!-- フード登録画面へ -->
+      <a th:href="@{/pets/{petId}/foods/add(petId=${pet.id})}">
+        フード登録
+      </a>
+
+      <!-- 登録されているフードがない場合 -->
+       <p th:if="${#lists.isEmpty(foodList)}">
+        フードが登録されていません。
+       </p>
+
+       <!-- フード一覧 -->
+        <div th:each="food : ${foodList}">
+
+            <hr>
+
+         <!-- フード名 -->
+        <h3 th:text="${food.foodName}">
+            ロイヤルカナン
+        </h3>
+
+        <!-- カロリー -->
+        <p>
+            カロリー：
+            <span th:text="${food.calorie}">385</span>
+            kcal / 100g
+        </p>
+
+        <!-- 食いつき -->
+        <p>
+            食いつき：
+            <span th:text="${food.palatability}">5</span>
+            / 5
+        </p>
+
+        <!-- メモ -->
+        <p>
+            メモ：
+            <span th:text="${food.memo}">よく食べる</span>
+        </p>
+
+
+        <!-- 編集画面へ -->
+        <a th:href="@{/pets/{petId}/foods/edit/{id}
+                    (petId=${pet.id}, id=${food.id})}">
+            編集
+        </a>
+
+
+        <!-- フード削除 -->
+        <form th:action="@{/pets/{petId}/foods/delete/{id}
+                         (petId=${pet.id}, id=${food.id})}"
+              method="post"
+              style="display:inline;">
+
+            <button type="submit"
+                    onclick="return confirm('このフードを削除しますか？');">
+                削除
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <br><br>
+
+    <!-- ペット詳細画面へ戻る -->
+    <a th:href="@{/pets/{petId}(petId=${pet.id})}">
+        ペット詳細へ戻る
+    </a>
+
+</body>
+
+</html>

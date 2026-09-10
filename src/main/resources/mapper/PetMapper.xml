@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.app.mapper.PetMapper">
+
+    <!-- 全ペットの一覧を取得する -->
+    <select id="selectAll" resultType="com.example.app.domain.Pet">
+        SELECT
+            id,
+            name,
+            species,
+            breed,
+            gender,
+            birth_date AS birthDate,
+            height,
+            neck_size AS neckSize,
+            chest_size AS chestSize,
+            body_height AS bodyHeight,
+            neutered,
+            activity_level AS activityLevel,
+            memo
+        FROM pets
+        ORDER BY id
+    </select>
+
+    <!-- 指定したIDのペットを1件取得する -->
+    <select id="selectById"
+            parameterType="java.lang.Integer"
+            resultType="com.example.app.domain.Pet">
+        SELECT
+            id,
+            name,
+            species,
+            breed,
+            gender,
+            birth_date AS birthDate,
+            height,
+            neck_size AS neckSize,
+            chest_size AS chestSize,
+            body_height AS bodyHeight,
+            neutered,
+            activity_level AS activityLevel,
+            memo
+        FROM pets
+        WHERE id = #{id}
+    </select>
+
+    <!-- ペット情報を登録する -->
+    <insert id="insert"
+            parameterType="com.example.app.domain.Pet"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO pets (
+            name,
+            species,
+            breed,
+            gender,
+            birth_date,
+            height,
+            neck_size,
+            chest_size,
+            body_height,
+            neutered,
+            activity_level,
+            memo
+        )
+        VALUES (
+            #{name},
+            #{species},
+            #{breed},
+            #{gender},
+            #{birthDate},
+            #{height},
+            #{neckSize},
+            #{chestSize},
+            #{bodyHeight},
+            #{neutered},
+            #{activityLevel},
+            #{memo}
+        )
+    </insert>
+
+    <!-- ペット情報を更新する -->
+    <update id="update"
+            parameterType="com.example.app.domain.Pet">
+        UPDATE pets
+        SET
+            name = #{name},
+            species = #{species},
+            breed = #{breed},
+            gender = #{gender},
+            birth_date = #{birthDate},
+            height = #{height},
+            neck_size = #{neckSize},
+            chest_size = #{chestSize},
+            body_height = #{bodyHeight},
+            neutered = #{neutered},
+            activity_level = #{activityLevel},
+            memo = #{memo}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 指定したIDのペット情報を削除する -->
+    <delete id="delete"
+            parameterType="java.lang.Integer">
+        DELETE FROM pets
+        WHERE id = #{id}
+    </delete>
+
+</mapper>

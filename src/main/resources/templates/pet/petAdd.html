@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ペット登録</title>
+</head>
+
+<body>
+
+    <h1>ペット登録</h1>
+
+    <!-- ペット情報を入力するフォーム -->
+    <!-- 入力した内容はPetControllerの「/pets/add」へPOST送信する -->
+    <form th:action="@{/pets/add}" th:object="${pet}" method="post">
+
+        <!-- ペット名 -->
+        <div>
+            <label>ペット名</label>
+            <input type="text" th:field="*{name}">
+        </div>
+
+        <!-- 種類 -->
+        <div>
+            <label>種類</label>
+            <select th:field="*{species}">
+                <option value="">選択してください</option>
+                <option value="犬">犬</option>
+                <option value="猫">猫</option>
+                <option value="その他">その他</option>
+            </select>
+        </div>
+
+        <!-- 品種 -->
+        <div>
+            <label>品種</label>
+            <input type="text" th:field="*{breed}">
+        </div>
+
+        <!-- 性別 -->
+        <div>
+            <label>性別</label>
+            <select th:field="*{gender}">
+                <option value="">選択してください</option>
+                <option value="MALE">男の子</option>
+                <option value="FEMALE">女の子</option>
+            </select>
+        </div>
+
+        <!-- 生年月日 -->
+        <div>
+            <label>生年月日</label>
+            <input type="date" th:field="*{birthDate}">
+        </div>
+
+        <!-- 体高 -->
+        <div>
+            <label>体高（cm）</label>
+            <input type="number" step="0.1" th:field="*{height}">
+        </div>
+
+        <!-- 首回り -->
+        <div>
+            <label>首回り（cm）</label>
+            <input type="number" step="0.1" th:field="*{neckSize}">
+        </div>
+
+        <!-- 胴回り -->
+        <div>
+            <label>胴回り（cm）</label>
+            <input type="number" step="0.1" th:field="*{chestSize}">
+        </div>
+
+        <!-- 背丈 -->
+        <div>
+            <label>背丈（cm）</label>
+            <input type="number" step="0.1" th:field="*{bodyHeight}">
+        </div>
+
+        <!-- 避妊・去勢 -->
+        <div>
+            <label>避妊・去勢</label>
+            <select th:field="*{neutered}">
+                <option value="">選択してください</option>
+                <option value="true">済み</option>
+                <option value="false">未実施</option>
+            </select>
+        </div>
+
+        <!-- 活動量 -->
+        <div>
+            <label>活動量</label>
+            <select th:field="*{activityLevel}">
+                <option value="">選択してください</option>
+                <option value="LOW">少ない</option>
+                <option value="NORMAL">普通</option>
+                <option value="HIGH">多い</option>
+            </select>
+        </div>
+
+        <!-- メモ -->
+        <div>
+            <label>メモ</label>
+            <textarea th:field="*{memo}"></textarea>
+        </div>
+
+        <!-- 入力したペット情報を登録する -->
+        <button type="submit">登録</button>
+
+        <!-- 登録せずTOP画面へ戻る -->
+        <a th:href="@{/}">TOPへ戻る</a>
+
+    </form>
+
+</body>
+
+</html>

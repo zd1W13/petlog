@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ペット健康管理システム</title>
+</head>
+
+<body>
+
+    <h1>ペット健康管理システム</h1>
+
+    <h2>登録ペット一覧</h2>
+
+    <!-- ペットが1件も登録されていない場合 -->
+    <p th:if="${#lists.isEmpty(petList)}">
+        登録されているペットはいません。
+    </p>
+
+    <!-- 登録されているペットを1匹ずつ表示する -->
+    <div th:each="pet : ${petList}">
+
+        <!-- ペット名 -->
+        <p>
+            <strong th:text="${pet.name}">ペット名</strong>
+        </p>
+
+        <!-- 犬種 -->
+        <p>
+            犬種：
+            <span th:text="${pet.breed}">品種</span>
+        </p>
+
+        <!-- 性別 -->
+        <p>
+            性別：
+            <span th:if="${pet.gender == 'MALE'}">男の子</span>
+            <span th:if="${pet.gender == 'FEMALE'}">女の子</span>
+        </p>
+
+        <!-- 生年月日 -->
+        <p>
+            生年月日：
+            <span th:text="${pet.birthDate}">2023-09-10</span>
+        </p>
+
+        <!-- ペット詳細画面へ -->
+        <a th:href="@{/pets/{id}(id=${pet.id})}">
+            詳細
+        </a>
+
+        <!-- ペット編集画面へ -->
+        <a th:href="@{/pets/edit/{id}(id=${pet.id})}">
+            編集
+        </a>
+
+        <!-- 削除ボタン -->
+        <form th:action="@{/pets/delete/{id}(id=${pet.id})}" method="post" style="display:inline;"
+            onsubmit="return confirm('このペットを削除しますか？');">
+
+            <button type="submit">
+                削除
+            </button>
+
+        </form>
+
+        <hr>
+
+    </div>
+
+    <!-- ペット登録画面へ -->
+    <a th:href="@{/pets/add}">
+        ＋ペットを登録
+    </a>
+
+    <!-- 削除が完了した場合だけPOPUPを表示する -->
+<script th:if="${param.deleted}">
+
+    // 削除完了POPUPを表示する
+    alert('ペットを削除しました。');
+
+</script>
+
+</body>
+
+</html>

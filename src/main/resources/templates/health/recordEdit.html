@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>健康記録編集</title>
+</head>
+
+<body>
+
+    <h1>健康記録編集</h1>
+
+    <!-- 健康記録編集フォーム -->
+    <form th:action="@{/pets/{petId}/records/edit/{id}
+            (petId=${pet.id}, id=${healthRecord.id})}"
+          method="post"
+          th:object="${healthRecord}">
+
+        <!-- 記録日 -->
+        <p>
+            <label>記録日：</label>
+
+            <input type="date"
+                   th:field="*{recordDate}">
+        </p>
+
+
+        <!-- 体重 -->
+        <p>
+            <label>体重：</label>
+
+            <input type="number"
+                   step="0.1"
+                   th:field="*{weight}">
+
+            kg
+        </p>
+
+
+        <!-- うんちの状態 -->
+        <p>
+            <label>うんちの状態：</label>
+
+            <label>
+                <input type="radio"
+                       th:field="*{poopCondition}"
+                       value="良好">
+                良好
+            </label>
+
+            <label>
+                <input type="radio"
+                       th:field="*{poopCondition}"
+                       value="普通">
+                普通
+            </label>
+
+            <label>
+                <input type="radio"
+                       th:field="*{poopCondition}"
+                       value="軟便">
+                軟便
+            </label>
+
+            <label>
+                <input type="radio"
+                       th:field="*{poopCondition}"
+                       value="下痢">
+                下痢
+            </label>
+
+            <label>
+                <input type="radio"
+                       th:field="*{poopCondition}"
+                       value="なし">
+                なし
+            </label>
+        </p>
+
+
+        <!-- おしっこの回数 -->
+        <p>
+            <label>おしっこの回数：</label>
+
+            <input type="number"
+                   min="0"
+                   th:field="*{urinationCount}">
+
+            回
+        </p>
+
+
+        <!-- 嘔吐 -->
+        <p>
+            <label>嘔吐：</label>
+
+            <label>
+                <input type="radio"
+                       th:field="*{vomiting}"
+                       value="false">
+                なし
+            </label>
+
+            <label>
+                <input type="radio"
+                       th:field="*{vomiting}"
+                       value="true">
+                あり
+            </label>
+        </p>
+
+
+        <!-- 食事量（朝） -->
+        <p>
+            <label>食事量（朝）：</label>
+
+            <input type="number"
+                   min="0"
+                   th:field="*{morningFoodAmount}">
+
+            g
+
+            <label>
+                <input type="checkbox"
+                       th:field="*{morningNoMeal}">
+                食べてない
+            </label>
+        </p>
+
+
+        <!-- 食事量（晩） -->
+        <p>
+            <label>食事量（晩）：</label>
+
+            <input type="number"
+                   min="0"
+                   th:field="*{eveningFoodAmount}">
+
+            g
+
+            <label>
+                <input type="checkbox"
+                       th:field="*{eveningNoMeal}">
+                食べてない
+            </label>
+        </p>
+
+
+        <!-- メモ -->
+        <p>
+            <label>メモ：</label>
+
+            <textarea th:field="*{memo}"
+                      rows="4"
+                      cols="40"></textarea>
+        </p>
+
+
+        <!-- 更新ボタン -->
+        <button type="submit">
+            更新
+        </button>
+
+    </form>
+
+
+    <!-- 健康記録画面へ戻る -->
+    <p>
+        <a th:href="@{/pets/{petId}/records
+            (petId=${pet.id}, date=${healthRecord.recordDate})}">
+            健康記録一覧へ戻る
+        </a>
+    </p>
+
+</body>
+
+</html>

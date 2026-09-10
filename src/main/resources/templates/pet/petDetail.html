@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ペット詳細</title>
+</head>
+
+<body>
+
+    <h1>ペット詳細</h1>
+
+    <!-- 画面上部のナビゲーション -->
+    <div>
+
+        <!-- 健康記録画面へ -->
+        <a th:href="@{/pets/{id}/records(id=${pet.id})}">
+            健康記録一覧
+        </a>
+
+        <!-- 健康グラフ画面へ -->
+        <a th:href="@{/pets/{petId}/health/graph(petId=${pet.id})}">
+            健康グラフ
+        </a>
+
+        <!-- フード管理画面へ -->
+        <a th:href="@{/pets/{petId}/foods(petId=${pet.id})}">
+            フード管理
+        </a>
+
+        <!-- TOP画面へ戻る -->
+        <a th:href="@{/}">
+            TOPへ戻る
+        </a>
+
+    </div>
+
+    <hr>
+
+    <!-- 基本情報 -->
+    <h2>基本情報</h2>
+
+    <p>
+        <strong>名前：</strong>
+        <span th:text="${pet.name}">ペット名</span>
+    </p>
+
+    <p>
+        <strong>種類：</strong>
+        <span th:text="${pet.species}">種類</span>
+    </p>
+
+    <p>
+        <strong>品種：</strong>
+        <span th:text="${pet.breed}">品種</span>
+    </p>
+
+    <p>
+        <strong>性別：</strong>
+        <span th:if="${pet.gender == 'MALE'}">男の子</span>
+        <span th:if="${pet.gender == 'FEMALE'}">女の子</span>
+    </p>
+
+    <p>
+        <strong>生年月日：</strong>
+        <span th:text="${pet.birthDate}">2023-09-10</span>
+    </p>
+
+    <!-- 年齢 -->
+    <p>
+        <strong>年齢：</strong>
+        <span th:text="${age}">0</span>歳
+    </p>
+
+    <!-- 体格情報 -->
+    <h2>体格情報</h2>
+
+    <p>
+        <strong>体高：</strong>
+        <span th:text="${pet.height}">0</span> cm
+    </p>
+
+    <p>
+        <strong>首回り：</strong>
+        <span th:text="${pet.neckSize}">0</span> cm
+    </p>
+
+    <p>
+        <strong>胴回り：</strong>
+        <span th:text="${pet.chestSize}">0</span> cm
+    </p>
+
+    <p>
+        <strong>背丈：</strong>
+        <span th:text="${pet.bodyHeight}">0</span> cm
+    </p>
+
+    <!-- 生活情報 -->
+    <h2>生活情報</h2>
+
+    <p>
+        <strong>避妊・去勢：</strong>
+        <span th:if="${pet.neutered == true}">済み</span>
+        <span th:if="${pet.neutered == false}">未実施</span>
+    </p>
+
+    <p>
+        <strong>活動量：</strong>
+        <span th:if="${pet.activityLevel == 'LOW'}">少ない</span>
+        <span th:if="${pet.activityLevel == 'NORMAL'}">普通</span>
+        <span th:if="${pet.activityLevel == 'HIGH'}">多い</span>
+    </p>
+
+    <!-- メモ -->
+    <h2>メモ</h2>
+
+    <p th:text="${pet.memo}">
+        メモ
+    </p>
+
+</body>
+
+</html>
