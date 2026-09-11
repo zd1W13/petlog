@@ -16,6 +16,10 @@ public interface HealthRecordMapper {
 
 	// 指定したペットの直近1か月の健康記録を取得する
 	public List<HealthRecord> selectLastMonthByPetId(Integer petId);
+	
+	// 指定したペットの最新の健康記録を1件取得する
+	// 給餌量計算で最新の体重を使用するため
+	public HealthRecord selectLatestByPetId(Integer petId);
 
 	// 指定した健康記録をIDで1件取得する
 	public HealthRecord selectById(Integer id);

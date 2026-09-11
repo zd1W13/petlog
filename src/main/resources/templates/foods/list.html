@@ -14,7 +14,7 @@
     <h2 th:text="${pet.name} + ' のフード'">くるみのフード</h2>
 
     <!-- フード給餌量計算画面へ -->
-     <a th:href="@{/pets/{petId}/foods/calculate(petId=${pet.id})}">
+     <a th:href="@{/pets/{petId}/foods/calculation(petId=${pet.id})}">
         フード給餌量計算
      </a>
 

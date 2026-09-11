@@ -3,8 +3,11 @@ package com.example.app.controller;
 import java.time.LocalDate;
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,179 +21,234 @@ import com.example.app.service.PetService;
 @Controller
 public class HealthRecordController {
 
-    // 健康記録に関する処理を行うService
-    private final HealthRecordService healthRecordService;
+	// 健康記録に関する処理を行うService
+	private final HealthRecordService healthRecordService;
 
-    // ペット情報に関する処理を行うService
-    private final PetService petService;
+	// ペット情報に関する処理を行うService
+	private final PetService petService;
 
+	// Serviceを使えるようにする
+	public HealthRecordController(
+			HealthRecordService healthRecordService,
+			PetService petService) {
 
-    // Serviceを使えるようにする
-    public HealthRecordController(
-            HealthRecordService healthRecordService,
-            PetService petService) {
+		this.healthRecordService = healthRecordService;
+		this.petService = petService;
+	}
 
-        this.healthRecordService = healthRecordService;
-        this.petService = petService;
-    }
+	// ========================================
+	// 健康記録画面を表示する
+	// ========================================
+	@GetMapping("/pets/{petId}/records")
+	public String showRecords(
+			@PathVariable Integer petId,
+			@RequestParam(required = false) LocalDate date,
+			Model model) {
 
+		// 対象のペット情報を取得する
+		Pet pet = petService.getPetById(petId);
 
-    // ========================================
-    // 健康記録画面を表示する
-    // ========================================
-    @GetMapping("/pets/{petId}/records")
-    public String showRecords(
-            @PathVariable Integer petId,
-            @RequestParam(required = false) LocalDate date,
-            Model model) {
+		// このペットの健康記録をすべて取得する
+		List<HealthRecord> recordList = healthRecordService.getHealthRecordList(petId);
 
-        // 対象のペット情報を取得する
-        Pet pet = petService.getPetById(petId);
+		// 日付が指定されていない場合は今日の日付を使用する
+		LocalDate selectedDate = (date != null) ? date : LocalDate.now();
 
-        // このペットの健康記録をすべて取得する
-        List<HealthRecord> recordList =
-                healthRecordService.getHealthRecordList(petId);
+		// 選択された日付の健康記録を取得する
+		HealthRecord selectedRecord = healthRecordService.getHealthRecordByDate(
+				petId,
+				selectedDate);
 
-        // 日付が指定されていない場合は今日の日付を使用する
-        LocalDate selectedDate =
-                (date != null) ? date : LocalDate.now();
+		// 画面へ渡す
+		model.addAttribute("pet", pet);
+		model.addAttribute("recordList", recordList);
+		model.addAttribute("selectedDate", selectedDate);
+		model.addAttribute("selectedRecord", selectedRecord);
 
-        // 選択された日付の健康記録を取得する
-        HealthRecord selectedRecord =
-                healthRecordService.getHealthRecordByDate(
-                        petId,
-                        selectedDate);
+		// 健康記録画面を表示する
+		return "health/records";
+	}
 
-        // 画面へ渡す
-        model.addAttribute("pet", pet);
-        model.addAttribute("recordList", recordList);
-        model.addAttribute("selectedDate", selectedDate);
-        model.addAttribute("selectedRecord", selectedRecord);
+	// ========================================
+	// 健康記録登録画面を表示する
+	// ========================================
+	@GetMapping("/pets/{petId}/records/add")
+	public String showAddForm(
+			@PathVariable Integer petId,
+			Model model) {
 
-        // 健康記録画面を表示する
-        return "health/records";
-    }
+		// 対象のペット情報を取得する
+		Pet pet = petService.getPetById(petId);
 
+		// 新しく入力する健康記録を作る
+		HealthRecord healthRecord = new HealthRecord();
 
-    // ========================================
-    // 健康記録登録画面を表示する
-    // ========================================
-    @GetMapping("/pets/{petId}/records/add")
-    public String showAddForm(
-            @PathVariable Integer petId,
-            Model model) {
+		// ペットIDを設定する
+		healthRecord.setPetId(petId);
 
-        // 対象のペット情報を取得する
-        Pet pet = petService.getPetById(petId);
+		// 初期表示では今日の日付を設定する
+		healthRecord.setRecordDate(LocalDate.now());
 
-        // 新しく入力する健康記録を作る
-        HealthRecord healthRecord = new HealthRecord();
+		// 「食べていない」の初期値をfalseにする
+		healthRecord.setMorningNoMeal(false);
+		healthRecord.setEveningNoMeal(false);
 
-        // ペットIDを設定する
-        healthRecord.setPetId(petId);
+		// 嘔吐の初期値を「なし」にする
+		healthRecord.setVomiting(false);
 
-        // 初期表示では今日の日付を設定する
-        healthRecord.setRecordDate(LocalDate.now());
+		// 画面へ渡す
+		model.addAttribute("pet", pet);
+		model.addAttribute("healthRecord", healthRecord);
 
-        // 「食べていない」の初期値をfalseにする
-        healthRecord.setMorningNoMeal(false);
-        healthRecord.setEveningNoMeal(false);
+		// 健康記録登録画面を表示する
+		return "health/recordAdd";
+	}
 
-        // 嘔吐の初期値を「なし」にする
-        healthRecord.setVomiting(false);
+	// ========================================
+	// 健康記録を登録する
+	// ========================================
+	@PostMapping("/pets/{petId}/records/add")
+	public String addHealthRecord(
+			@PathVariable Integer petId,
+			@Valid HealthRecord healthRecord,
+			BindingResult result,
+			Model model) {
 
-        // 画面へ渡す
-        model.addAttribute("pet", pet);
-        model.addAttribute("healthRecord", healthRecord);
+		// URLから受け取ったペットIDを設定する
+		healthRecord.setPetId(petId);
 
-        // 健康記録登録画面を表示する
-        return "health/recordAdd";
-    }
+		// 朝に「食べてない」のチェックがなく、食事量も未入力の場合
+		if (!Boolean.TRUE.equals(healthRecord.getMorningNoMeal())
+				&& healthRecord.getMorningFoodAmount() == null) {
 
+			result.rejectValue(
+					"morningFoodAmount",
+					"required",
+					"朝の食事量を入力するか、「食べてない」を選択してください");
+		}
 
-    // ========================================
-    // 健康記録を登録する
-    // ========================================
-    @PostMapping("/pets/{petId}/records/add")
-    public String addHealthRecord(
-            @PathVariable Integer petId,
-            HealthRecord healthRecord) {
+		// 晩に「食べてない」のチェックがなく、食事量も未入力の場合
+		if (!Boolean.TRUE.equals(healthRecord.getEveningNoMeal())
+				&& healthRecord.getEveningFoodAmount() == null) {
 
-        // URLから受け取ったペットIDを設定する
-        healthRecord.setPetId(petId);
+			result.rejectValue(
+					"eveningFoodAmount",
+					"required",
+					"晩の食事量を入力するか、「食べてない」を選択してください");
+		}
 
-        // 健康記録をDBへ登録する
-        healthRecordService.addHealthRecord(healthRecord);
+		// バリデーションエラーがある場合
+		if (result.hasErrors()) {
 
-        // 登録後は健康記録画面へ戻る
-        return "redirect:/pets/" + petId + "/records";
-    }
+			// ペット情報を再取得して画面へ渡す
+			Pet pet = petService.getPetById(petId);
+			model.addAttribute("pet", pet);
 
+			// 登録画面へ戻る
+			return "health/recordAdd";
+		}
 
-    // ========================================
-    // 健康記録編集画面を表示する
-    // ========================================
-    @GetMapping("/pets/{petId}/records/edit/{id}")
-    public String showEditForm(
-            @PathVariable Integer petId,
-            @PathVariable Integer id,
-            Model model) {
+		// 健康記録をDBへ登録する
+		healthRecordService.addHealthRecord(healthRecord);
 
-        // 対象のペット情報を取得する
-        Pet pet = petService.getPetById(petId);
+		// 登録後は健康記録画面へ戻る
+		return "redirect:/pets/" + petId + "/records";
+	}
 
-        // 編集する健康記録を取得する
-        HealthRecord healthRecord =
-                healthRecordService.getHealthRecordById(id);
+	// ========================================
+	// 健康記録編集画面を表示する
+	// ========================================
+	@GetMapping("/pets/{petId}/records/edit/{id}")
+	public String showEditForm(
+			@PathVariable Integer petId,
+			@PathVariable Integer id,
+			Model model) {
 
-        // 画面へ渡す
-        model.addAttribute("pet", pet);
-        model.addAttribute("healthRecord", healthRecord);
+		// 対象のペット情報を取得する
+		Pet pet = petService.getPetById(petId);
 
-        // 健康記録編集画面を表示する
-        return "health/recordEdit";
-    }
+		// 編集する健康記録を取得する
+		HealthRecord healthRecord = healthRecordService.getHealthRecordById(id);
 
+		// 画面へ渡す
+		model.addAttribute("pet", pet);
+		model.addAttribute("healthRecord", healthRecord);
 
-    // ========================================
-    // 健康記録を更新する
-    // ========================================
-    @PostMapping("/pets/{petId}/records/edit/{id}")
-    public String updateHealthRecord(
-            @PathVariable Integer petId,
-            @PathVariable Integer id,
-            HealthRecord healthRecord) {
+		// 健康記録編集画面を表示する
+		return "health/recordEdit";
+	}
 
-        // URLの健康記録IDを設定する
-        healthRecord.setId(id);
+	// ========================================
+	// 健康記録を更新する
+	// ========================================
+	@PostMapping("/pets/{petId}/records/edit/{id}")
+	public String updateHealthRecord(
+			@PathVariable Integer petId,
+			@PathVariable Integer id,
+			@Valid HealthRecord healthRecord,
+			BindingResult result,
+			Model model) {
 
-        // URLのペットIDを設定する
-        healthRecord.setPetId(petId);
+		// URLの健康記録IDを設定する
+		healthRecord.setId(id);
 
-        // DBの健康記録を更新する
-        healthRecordService.updateHealthRecord(healthRecord);
+		// URLのペットIDを設定する
+		healthRecord.setPetId(petId);
 
-        // 更新した日付の健康記録画面へ戻る
-        return "redirect:/pets/"
-                + petId
-                + "/records?date="
-                + healthRecord.getRecordDate();
-    }
+		// 朝に「食べてない」のチェックがなく、食事量も未入力の場合
+		if (!Boolean.TRUE.equals(healthRecord.getMorningNoMeal())
+				&& healthRecord.getMorningFoodAmount() == null) {
 
+			result.rejectValue(
+					"morningFoodAmount",
+					"required",
+					"朝の食事量を入力するか、「食べてない」を選択してください");
+		}
 
-    // ========================================
-    // 健康記録を削除する
-    // ========================================
-    @PostMapping("/pets/{petId}/records/delete/{id}")
-    public String deleteHealthRecord(
-            @PathVariable Integer petId,
-            @PathVariable Integer id) {
+		// 晩に「食べてない」のチェックがなく、食事量も未入力の場合
+		if (!Boolean.TRUE.equals(healthRecord.getEveningNoMeal())
+				&& healthRecord.getEveningFoodAmount() == null) {
 
-        // 指定した健康記録をDBから削除する
-        healthRecordService.deleteHealthRecord(id);
+			result.rejectValue(
+					"eveningFoodAmount",
+					"required",
+					"晩の食事量を入力するか、「食べてない」を選択してください");
+		}
 
-        // 削除完了の情報を付けて健康記録画面へ戻る
-        return "redirect:/pets/" + petId + "/records?deleted=true";
-    }
+		// バリデーションエラーがある場合
+		if (result.hasErrors()) {
+
+			// ペット情報を再取得して画面へ渡す
+			Pet pet = petService.getPetById(petId);
+			model.addAttribute("pet", pet);
+
+			// 編集画面へ戻る
+			return "health/recordEdit";
+		}
+
+		// DBの健康記録を更新する
+		healthRecordService.updateHealthRecord(healthRecord);
+
+		// 更新した日付の健康記録画面へ戻る
+		return "redirect:/pets/"
+				+ petId
+				+ "/records?date="
+				+ healthRecord.getRecordDate();
+	}
+
+	// ========================================
+	// 健康記録を削除する
+	// ========================================
+	@PostMapping("/pets/{petId}/records/delete/{id}")
+	public String deleteHealthRecord(
+			@PathVariable Integer petId,
+			@PathVariable Integer id) {
+
+		// 指定した健康記録をDBから削除する
+		healthRecordService.deleteHealthRecord(id);
+
+		// 削除完了の情報を付けて健康記録画面へ戻る
+		return "redirect:/pets/" + petId + "/records?deleted=true";
+	}
 
 }

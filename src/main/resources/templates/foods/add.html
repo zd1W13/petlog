@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-<meta charset="UTF-8">
-<title>フード登録</title>
+    <meta charset="UTF-8">
+    <title>フード登録</title>
 </head>
+
 <body>
 
     <h1>フード登録</h1>
@@ -16,7 +18,14 @@
         <!-- フード名 -->
         <div>
             <label>フード名</label>
-            <input type="text" th:field="*{foodName}">
+
+            <input type="text"
+                   th:field="*{foodName}">
+
+            <!-- フード名のエラー表示 -->
+            <span th:if="${#fields.hasErrors('foodName')}"
+                  th:errors="*{foodName}">
+            </span>
         </div>
 
         <br>
@@ -24,7 +33,14 @@
         <!-- カロリー -->
         <div>
             <label>カロリー（kcal / 100g）</label>
-            <input type="number" th:field="*{calorie}">
+
+            <input type="number"
+                   th:field="*{calorie}">
+
+            <!-- カロリーのエラー表示 -->
+            <span th:if="${#fields.hasErrors('calorie')}"
+                  th:errors="*{calorie}">
+            </span>
         </div>
 
         <br>
@@ -41,6 +57,11 @@
                 <option value="4">★★★★☆</option>
                 <option value="5">★★★★★</option>
             </select>
+
+            <!-- 食いつきのエラー表示 -->
+            <span th:if="${#fields.hasErrors('palatability')}"
+                  th:errors="*{palatability}">
+            </span>
         </div>
 
         <br>
@@ -48,13 +69,21 @@
         <!-- メモ -->
         <div>
             <label>メモ</label>
+
             <textarea th:field="*{memo}"></textarea>
+
+            <!-- メモのエラー表示 -->
+            <span th:if="${#fields.hasErrors('memo')}"
+                  th:errors="*{memo}">
+            </span>
         </div>
 
         <br>
 
         <!-- 登録 -->
-        <button type="submit">登録</button>
+        <button type="submit">
+            登録
+        </button>
 
     </form>
 
@@ -65,6 +94,6 @@
         フード管理へ戻る
     </a>
 
-
 </body>
+
 </html>

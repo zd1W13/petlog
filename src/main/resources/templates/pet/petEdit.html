@@ -15,14 +15,15 @@
         PetControllerから受け取ったpetの情報が
         各入力欄に最初から表示される
     -->
-    <form th:action="@{/pets/edit/{id}(id=${pet.id})}"
-          th:object="${pet}"
-          method="post">
+    <form th:action="@{/pets/edit/{id}(id=${pet.id})}" th:object="${pet}" method="post">
 
         <!-- ペット名 -->
         <div>
             <label>ペット名</label>
             <input type="text" th:field="*{name}">
+
+            <!-- ペット名にバリデーションエラーがある場合に表示する -->
+            <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
         </div>
 
         <!-- 種類 -->
@@ -34,12 +35,20 @@
                 <option value="猫">猫</option>
                 <option value="その他">その他</option>
             </select>
+
+            <!-- 種類にバリデーションエラーがある場合に表示する -->
+            <p th:if="${#fields.hasErrors('species')}" th:errors="*{species}">
+            </p>
         </div>
 
         <!-- 品種 -->
         <div>
             <label>品種</label>
             <input type="text" th:field="*{breed}">
+
+            <!-- 品種にバリデーションエラーがある場合に表示する -->
+            <p th:if="${#fields.hasErrors('breed')}" th:errors="*{breed}">
+            </p>
         </div>
 
         <!-- 性別 -->
@@ -50,44 +59,62 @@
                 <option value="MALE">男の子</option>
                 <option value="FEMALE">女の子</option>
             </select>
+
+            <!-- 性別にバリデーションエラーがある場合に表示する -->
+            <p th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}">
+            </p>
+
         </div>
 
         <!-- 生年月日 -->
         <div>
             <label>生年月日</label>
             <input type="date" th:field="*{birthDate}">
+
+            <!-- 生年月日にバリデーションエラーがある場合に表示する -->
+            <p th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}">
+            </p>
         </div>
 
         <!-- 体高 -->
         <div>
             <label>体高（cm）</label>
-            <input type="number"
-                   step="0.1"
-                   th:field="*{height}">
+            <input type="number" step="0.1" th:field="*{height}">
+
+            <!-- 体高にバリデーションエラーがある場合に表示する -->
+            <p th:if="${#fields.hasErrors('height')}" th:errors="*{height}">
+            </p>
         </div>
 
         <!-- 首回り -->
         <div>
             <label>首回り（cm）</label>
-            <input type="number"
-                   step="0.1"
-                   th:field="*{neckSize}">
+            <input type="number" step="0.1" th:field="*{neckSize}">
+
+            <!-- 首回りにバリデーションエラーがある場合に表示する -->
+            <p th:if="${#fields.hasErrors('neckSize')}" th:errors="*{neckSize}">
+            </p>
         </div>
 
         <!-- 胴回り -->
         <div>
             <label>胴回り（cm）</label>
-            <input type="number"
-                   step="0.1"
-                   th:field="*{chestSize}">
+            <input type="number" step="0.1" th:field="*{chestSize}">
+
+            <!-- 胴回りにバリデーションエラーがある場合に表示する -->
+            <p th:if="${#fields.hasErrors('chestSize')}" th:errors="*{chestSize}">
+            </p>
         </div>
 
         <!-- 背丈 -->
         <div>
             <label>背丈（cm）</label>
-            <input type="number"
-                   step="0.1"
-                   th:field="*{bodyHeight}">
+            <input type="number" step="0.1" th:field="*{bodyHeight}">
+
+            <!-- 背丈にバリデーションエラーがある場合に表示する -->
+            <p th:if="${#fields.hasErrors('bodyHeight')}" th:errors="*{bodyHeight}">
+            </p>
+
         </div>
 
         <!-- 避妊・去勢 -->
@@ -98,6 +125,11 @@
                 <option value="true">済み</option>
                 <option value="false">未実施</option>
             </select>
+
+            <!-- 避妊・去勢にバリデーションエラーがある場合に表示する -->
+            <p th:if="${#fields.hasErrors('neutered')}" th:errors="*{neutered}">
+            </p>
+
         </div>
 
         <!-- 活動量 -->
@@ -109,12 +141,20 @@
                 <option value="NORMAL">普通</option>
                 <option value="HIGH">多い</option>
             </select>
+
+            <!-- 活動量にバリデーションエラーがある場合に表示する -->
+            <p th:if="${#fields.hasErrors('activityLevel')}" th:errors="*{activityLevel}">
+            </p>
         </div>
 
         <!-- メモ -->
         <div>
             <label>メモ</label>
             <textarea th:field="*{memo}"></textarea>
+
+            <!-- メモにバリデーションエラーがある場合に表示する -->
+            <p th:if="${#fields.hasErrors('memo')}" th:errors="*{memo}">
+            </p>
         </div>
 
         <!-- 編集した内容をDBへ保存する -->

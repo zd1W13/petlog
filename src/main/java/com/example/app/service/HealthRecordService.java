@@ -28,6 +28,12 @@ public class HealthRecordService {
     public List<HealthRecord> getLastMonthHealthRecords(Integer petId) {
     	return healthRecordMapper.selectLastMonthByPetId(petId);
     }
+    
+ // 指定したペットの最新の健康記録を1件取得する
+ // 給餌量計算で最新の体重を使用するため
+    public HealthRecord getLatestHealthRecord(Integer petId) {
+    	return healthRecordMapper.selectLatestByPetId(petId);
+    }
 
     // 指定したIDの健康記録を1件取得する
     public HealthRecord getHealthRecordById(Integer id) {

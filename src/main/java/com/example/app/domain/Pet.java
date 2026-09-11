@@ -2,6 +2,11 @@ package com.example.app.domain;
 
 import java.time.LocalDate;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 public class Pet {
@@ -10,41 +15,54 @@ public class Pet {
 	private Integer id;
 
 	// ペット名
+	@NotBlank(message = "ペット名を入力してください")
+	@Size(max = 50, message = "ペット名は50文字以内で入力してください")
 	private String name;
 
 	// 種類
+	@NotBlank(message = "種類を入力してください")
 	private String species;
 
 	// 品種
+	@NotBlank(message = "品種を入力してください")
 	private String breed;
 
 	// 性別
+	@NotBlank(message = "性別を入力してください")
 	private String gender;
 
 	// 生年月日
 	// HTMLの日付形式（yyyy-MM-dd）をLocalDateとして受け取る
+	@NotNull(message = "生年月日を入力してください")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate birthDate;
 
 	// 体高
+	@Positive(message = "体高は0より大きい数値を入力してください")
 	private Double height;
 
 	// 首回り
+	@Positive(message = "首回りは0より大きい数値を入力してください")
 	private Double neckSize;
 
 	// 胴回り
+	@Positive(message = "胴回りは0より大きい数値を入力してください")
 	private Double chestSize;
 
 	// 背丈
+	@Positive(message = "背丈は0より大きい数値を入力してください")
 	private Double bodyHeight;
 
 	// 避妊・去勢の有無
+	@NotNull(message = "避妊・去勢の有無を選択してください")
 	private Boolean neutered;
 
 	// 活動量レベル
+	@NotBlank(message = "活動量を選択してください")
 	private String activityLevel;
 
 	// メモ
+	@Size(max = 200, message = "メモは200文字以内で入力してください")
 	private String memo;
 
 	// ===== Getter / Setter =====

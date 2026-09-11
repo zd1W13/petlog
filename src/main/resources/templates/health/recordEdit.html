@@ -22,6 +22,11 @@
 
             <input type="date"
                    th:field="*{recordDate}">
+
+            <!-- 記録日のエラー表示 -->
+            <span th:if="${#fields.hasErrors('recordDate')}"
+                  th:errors="*{recordDate}">
+            </span>
         </p>
 
 
@@ -34,6 +39,11 @@
                    th:field="*{weight}">
 
             kg
+
+            <!-- 体重のエラー表示 -->
+            <span th:if="${#fields.hasErrors('weight')}"
+                  th:errors="*{weight}">
+            </span>
         </p>
 
 
@@ -75,6 +85,11 @@
                        value="なし">
                 なし
             </label>
+
+            <!-- うんちの状態のエラー表示 -->
+            <span th:if="${#fields.hasErrors('poopCondition')}"
+                  th:errors="*{poopCondition}">
+            </span>
         </p>
 
 
@@ -87,6 +102,11 @@
                    th:field="*{urinationCount}">
 
             回
+
+            <!-- おしっこの回数のエラー表示 -->
+            <span th:if="${#fields.hasErrors('urinationCount')}"
+                  th:errors="*{urinationCount}">
+            </span>
         </p>
 
 
@@ -107,6 +127,11 @@
                        value="true">
                 あり
             </label>
+
+            <!-- 嘔吐のエラー表示 -->
+            <span th:if="${#fields.hasErrors('vomiting')}"
+                  th:errors="*{vomiting}">
+            </span>
         </p>
 
 
@@ -115,7 +140,7 @@
             <label>食事量（朝）：</label>
 
             <input type="number"
-                   min="0"
+                   min="1"
                    th:field="*{morningFoodAmount}">
 
             g
@@ -125,6 +150,11 @@
                        th:field="*{morningNoMeal}">
                 食べてない
             </label>
+
+            <!-- 朝の食事量のエラー表示 -->
+            <span th:if="${#fields.hasErrors('morningFoodAmount')}"
+                  th:errors="*{morningFoodAmount}">
+            </span>
         </p>
 
 
@@ -133,7 +163,7 @@
             <label>食事量（晩）：</label>
 
             <input type="number"
-                   min="0"
+                   min="1"
                    th:field="*{eveningFoodAmount}">
 
             g
@@ -143,6 +173,11 @@
                        th:field="*{eveningNoMeal}">
                 食べてない
             </label>
+
+            <!-- 晩の食事量のエラー表示 -->
+            <span th:if="${#fields.hasErrors('eveningFoodAmount')}"
+                  th:errors="*{eveningFoodAmount}">
+            </span>
         </p>
 
 
@@ -153,6 +188,11 @@
             <textarea th:field="*{memo}"
                       rows="4"
                       cols="40"></textarea>
+
+            <!-- メモのエラー表示 -->
+            <span th:if="${#fields.hasErrors('memo')}"
+                  th:errors="*{memo}">
+            </span>
         </p>
 
 

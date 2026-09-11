@@ -18,8 +18,14 @@
         <!-- 記録日 -->
         <p>
             <label>記録日：</label>
+
             <input type="date"
                    th:field="*{recordDate}">
+
+            <!-- 記録日のエラーを表示する -->
+            <span th:if="${#fields.hasErrors('recordDate')}"
+                  th:errors="*{recordDate}">
+            </span>
         </p>
 
 
@@ -32,6 +38,11 @@
                    th:field="*{weight}">
 
             kg
+
+            <!-- 体重のエラーを表示する -->
+            <span th:if="${#fields.hasErrors('weight')}"
+                  th:errors="*{weight}">
+            </span>
         </p>
 
 
@@ -73,6 +84,11 @@
                        value="なし">
                 なし
             </label>
+
+            <!-- うんちの状態のエラーを表示する -->
+            <span th:if="${#fields.hasErrors('poopCondition')}"
+                  th:errors="*{poopCondition}">
+            </span>
         </p>
 
 
@@ -85,6 +101,11 @@
                    th:field="*{urinationCount}">
 
             回
+
+            <!-- おしっこの回数のエラーを表示する -->
+            <span th:if="${#fields.hasErrors('urinationCount')}"
+                  th:errors="*{urinationCount}">
+            </span>
         </p>
 
 
@@ -105,6 +126,11 @@
                        value="true">
                 あり
             </label>
+
+            <!-- 嘔吐のエラーを表示する -->
+            <span th:if="${#fields.hasErrors('vomiting')}"
+                  th:errors="*{vomiting}">
+            </span>
         </p>
 
 
@@ -123,6 +149,11 @@
                        th:field="*{morningNoMeal}">
                 食べてない
             </label>
+
+            <!-- 朝の食事量のエラーを表示する -->
+            <span th:if="${#fields.hasErrors('morningFoodAmount')}"
+                  th:errors="*{morningFoodAmount}">
+            </span>
         </p>
 
 
@@ -141,6 +172,11 @@
                        th:field="*{eveningNoMeal}">
                 食べてない
             </label>
+
+            <!-- 晩の食事量のエラーを表示する -->
+            <span th:if="${#fields.hasErrors('eveningFoodAmount')}"
+                  th:errors="*{eveningFoodAmount}">
+            </span>
         </p>
 
 
@@ -151,6 +187,11 @@
             <textarea th:field="*{memo}"
                       rows="4"
                       cols="40"></textarea>
+
+            <!-- メモのエラーを表示する -->
+            <span th:if="${#fields.hasErrors('memo')}"
+                  th:errors="*{memo}">
+            </span>
         </p>
 
 

@@ -49,6 +49,31 @@
 		ORDER BY record_date ASC
 		
 	</select>
+	
+	<!-- 指定したペットの最新の健康記録を1件取得する -->
+	<select id="selectLatestByPetId"
+	parameterType="java.lang.Integer"
+	resultType="com.example.app.domain.HealthRecord">
+	
+	SELECT
+		id,
+		pet_id AS petId,
+		record_date AS recordDate,
+		weight,
+		poop_condition AS poopCondition,
+		urination_count AS urinationCount,
+		vomiting,
+		morning_food_amount AS morningFoodAmount,
+		morning_no_meal AS morningNoMeal,
+		evening_food_amount AS eveningFoodAmount,
+		evening_no_meal AS eveningNoMeal,
+		memo
+
+		FROM health_records
+		WHERE pet_id = #{petId}
+		ORDER BY record_date DESC
+		LIMIT 1
+	</select>
 
 
 	<!-- 健康記録IDを使って1件取得する -->
